@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- src/AppBundle/Resources/config/doctrine/User.orm.xml -->
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <entity name="MainBundle\Entity\People" repository-class="MainBundle\Repository\People" table="people">
+        <id name="id" type="integer" column="id">
+            <generator strategy="AUTO"/>
+        </id>
+        <field name="name" type="string" length="255" column="name" nullable="true"/>
+
+        <many-to-one
+                field="society"
+                target-entity="MainBundle\Entity\Society"
+                inversed-by="society"
+        >
+            <join-column name="society" referenced-column-name="id"/>
+        </many-to-one>
+    </entity>
+</doctrine-mapping>

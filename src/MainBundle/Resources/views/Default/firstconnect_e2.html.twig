@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+{% block content %}
+    <h1>Etape 2</h1>
+    <h2>Premier peuple</h2>
+
+    {{ form_start(formView) }}
+    {{ form_row(formView._token) }}
+    {% for people in formView %}
+        {{ form_row(people.name) }}
+    {% endfor %}
+    {{ form_row(formView.submit) }}
+    {{ form_end(formView) }}
+
+{% endblock %}

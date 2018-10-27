@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+{% block content %}
+    <h1>Etape 1</h1>
+    <h2>Nom de votre Société</h2>
+
+
+    {{ form_start(formView) }}
+    {{ form_row(formView._token) }}
+    {{ form_row(formView.name) }}
+    {{ form_row(formView.submit) }}
+    {{ dump(formView) }}
+
+
+{% endblock %}

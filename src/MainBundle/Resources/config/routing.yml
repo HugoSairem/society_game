@@ -1,0 +1,11 @@
+main_connect:
+    path:     /
+    defaults: { _controller: MainBundle:Default:connect }
+
+main_firstconnect_e1:
+    path:     /firstconnect/e1
+    defaults: { _controller: MainBundle:Default:first_connect_e1 }
+
+main_firstconnect_e2:
+    path:     /firstconnect/e2
+    defaults: { _controller: MainBundle:Default:first_connect_e2 }

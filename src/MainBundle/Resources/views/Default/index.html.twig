@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+{% block content %}
+
+    {{ form_start(formView) }}
+    {{ form_row(formView._token) }}
+    {{ form_row(formView.name) }}
+    {{ form_row(formView.submit) }}
+
+
+{% endblock %}
