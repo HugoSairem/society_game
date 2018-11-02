@@ -17,8 +17,12 @@ class SocietyType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('name')
+                ->add('people', CollectionType::class, array(
+                'entry_type' => PeopleType::class,
+                'entry_options' => array('label' => false)))
                 //->add('user')
                 ->add('submit',SubmitType::class);
+
 
     }/**
      * {@inheritdoc}

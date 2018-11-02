@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+{% block content %}
+    <a href="{{ path('main_planet_dashboard_new') }}>New Planet</a>
+    {% for planet in allPlanets %}
+        <a href="{{ path('main_planet_dashboard',{'idSelectedPlanet':planet.id}) }}">{{ planet.name }}</a>
+    {% endfor %}
+    {% if selectedPlanet != null %}
+        {{ selectedPlanet.name }}
+        <div class="mapContent">
+        <div class="map">
+            {% for keyY,bigY in selectedPlanet.regionmapping %}
+                {% for keyX,bigX in bigY %}
+                    {% for region in regions %}
+                        {% if bigX == region.id %}
+                        <div class="regionMap">
+                            {% for key,y in region.seed %}
+                                <span class="yRow">
+                                    {% for x in y %}
+                                    <span class="mapX {{ x }} "></span>
+                                    {% endfor %}<br>
+                                </span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                    {% endfor %}
+
+
+                {% endfor %}
+                <br>
+            {% endfor %}
+        </div>
+        </div>
+
+    {% endif %}
+{% endblock %}

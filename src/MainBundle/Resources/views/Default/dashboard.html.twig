@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+{% block content %}
+
+    <h1>{{ society.name }}</h1>
+    Poulation totale : {{ society.population }}
+    {% for people in society.people%}
+        <div>
+            <ul>
+                <li>Peuple : {{ people.name }}</li>
+                <li>Race : {{ people.race.name }}</li>
+                <li>Population : {{ people.population }}</li>
+            </ul>
+        </div>
+    {% endfor %}
+    {% for city in society.city %}
+        <div>
+            <ul>
+                <li>Ville : {{ city.name }}</li>
+                <li>Population : {{ city.population }}</li>
+                <li>Region : {{ city.region.name }}</li>
+                <li>Planete : {{ city.region.planet.name }}</li>
+                <li>Systéme Solaire  {{ city.region.planet.solar.name }}</li>
+            </ul>
+        </div>
+    {% endfor %}
+
+
+{% endblock %}

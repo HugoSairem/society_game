@@ -4,17 +4,10 @@
                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
 
-    <entity name="MainBundle\Entity\Race" repository-class="MainBundle\Repository\Race" table="race">
+    <entity name="MainBundle\Entity\Area" repository-class="MainBundle\Repository\Area" table="area">
         <id name="id" type="integer" column="id">
             <generator strategy="AUTO"/>
         </id>
-        <field name="name" type="string" length="255" column="name" nullable="true"/>
-
-        <one-to-one
-                field="people"
-                target-entity="MainBundle\Entity\People"
-                inversed-by="people">
-            <join-column name="people" referenced-column-name="id"/>
-        </one-to-one>
+        <field name="type" type="string" length="255" column="type" nullable="true"/>
     </entity>
 </doctrine-mapping>

@@ -1,0 +1,22 @@
+{{ form_start(form) }}
+    {{ form_label(form.name, "Nom de votre Société") }}
+        {{ form_widget(form.name) }}
+    {% for people in form.people %}
+        <div>
+        {{ form_label(people.name, "Nom de votre peuple") }}
+        {{ form_widget(people.name) }}
+        {{ form_label(people.race.name, "Nom de la race du peuple") }}
+        {{ form_widget(people.race.name) }}
+        </div>
+        {% for person in people.person %}
+            {% if person.vars.value.gender == "0" %}
+                {{ form_label(person.name, "Nom de votre colon femelle") }}
+                {{ form_widget(person.name) }}
+            {% elseif person.vars.value.gender == "1" %}
+                {{ form_label(person.name, "Nom de votre colon male") }}
+                {{ form_widget(person.name) }}
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+
+{{ form_end(form) }}

@@ -8,10 +8,22 @@
         <id name="id" type="integer" column="id">
             <generator strategy="AUTO"/>
         </id>
+        <field name="name" type="string" length="255" column="name" nullable="true"/>
+        <field name="firstname" type="string" length="255" column="firstname" nullable="true"/>
+        <field name="age" type="integer" column="age" nullable="true"/>
+        <field name="gender" type="integer" column="gender" nullable="true"/>
+
 
         <many-to-one
+                field="city"
+                target-entity="MainBundle\Entity\City"
+                inversed-by="city">
+            <join-column name="city" referenced-column-name="id"/>
+        </many-to-one>
+        <many-to-one
                 field="people"
-                target-entity="MainBundle\Entity\People">
+                target-entity="MainBundle\Entity\People"
+                inversed-by="people">
             <join-column name="people" referenced-column-name="id"/>
         </many-to-one>
     </entity>

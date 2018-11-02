@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+{% block content %}
+    <div class="mapContent">
+    <div class="map">
+            <span class="yRow">
+                <span class="mapX"></span>
+            <span class="mapX">0</span>
+            <span class="mapX">1</span>
+            <span class="mapX">2</span>
+            <span class="mapX">3</span>
+            <span class="mapX">4</span>
+            <span class="mapX">5</span>
+            <span class="mapX">6</span>
+            <span class="mapX">7</span>
+            <span class="mapX">8</span>
+            <span class="mapX">9</span>
+            <span class="mapX">10</span>
+            <span class="mapX">11</span>
+            <span class="mapX">12</span>
+            <span class="mapX">13</span>
+            <span class="mapX">14</span>
+            <span class="mapX">15</span>
+            <span class="mapX">16</span>
+            <span class="mapX">17</span>
+                <span class="mapX">18</span>
+                <span class="mapX">19</span>
+                <span class="mapX">20</span>
+        </span>
+
+    {% for key,y in map %}
+        <span class="yRow">
+        <span class="mapY">{{ key }}</span>
+        {% for x in y %}
+            <span class="mapX {{ x }} "></span>
+        {% endfor %}
+        <br>
+        </span>
+    {% endfor %}
+    </div>
+    </div>
+{% endblock %}

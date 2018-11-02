@@ -9,7 +9,8 @@
             <generator strategy="AUTO"/>
         </id>
         <field name="name" type="string" length="255" column="name" nullable="true"/>
-
+        <field name="stage" type="string" length="255" column="stage" nullable="true"/>
+        <field name="population" type="integer" column="population" nullable="true"/>
 
         <one-to-one
                 field="user"
@@ -20,5 +21,10 @@
                 field="people"
                 target-entity="MainBundle\Entity\People"
                 mapped-by="society" />
+        <one-to-many
+                field="city"
+                target-entity="MainBundle\Entity\City"
+                mapped-by="society" />
+
     </entity>
 </doctrine-mapping>

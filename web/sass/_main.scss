@@ -1,0 +1,41 @@
+*, body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial;
+  box-sizing: border-box;
+}
+
+.mapContent{
+  width:1000px;
+  height:1000px;
+  overflow: scroll;
+
+}
+
+.map{
+  height:50000px;
+  width:50000px;
+}
+
+.yRow{
+  display:flex;
+}
+
+.mapX{
+  display:inline-block;
+  width:20px;
+  height:20px;
+  border: solid 1px black;
+}
+
+.mapY{
+  display:inline-block;
+  background-color: lightgrey;
+  border: solid 1px black;
+  width:20px;
+  height:20px;
+}
+
+.regionMap{
+  display: inline-block;
+}

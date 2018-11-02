@@ -4,29 +4,28 @@
                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
 
-    <entity name="MainBundle\Entity\People" repository-class="MainBundle\Repository\People" table="people">
+    <entity name="MainBundle\Entity\City" repository-class="MainBundle\Repository\City" table="city">
         <id name="id" type="integer" column="id">
             <generator strategy="AUTO"/>
         </id>
         <field name="name" type="string" length="255" column="name" nullable="true"/>
         <field name="population" type="integer" column="population" nullable="true"/>
 
-
-        <one-to-one
-                field="race"
-                target-entity="MainBundle\Entity\Race"
-                mapped-by="people">
-            <join-column name="race" referenced-column-name="id"/>
-        </one-to-one>
-
-        <one-to-many
-                field="person"
-                target-entity="MainBundle\Entity\Person"
-                mapped-by="people" />
         <one-to-many
                 field="city_population"
                 target-entity="MainBundle\Entity\CityPopulation"
-                mapped-by="people" />
+                mapped-by="city" />
+        <one-to-many
+                field="person"
+                target-entity="MainBundle\Entity\Person"
+                mapped-by="city" />
+        <many-to-one
+                field="region"
+                target-entity="MainBundle\Entity\Region"
+                inversed-by="region"
+        >
+            <join-column name="region" referenced-column-name="id"/>
+        </many-to-one>
         <many-to-one
                 field="society"
                 target-entity="MainBundle\Entity\Society"
@@ -34,5 +33,7 @@
         >
             <join-column name="society" referenced-column-name="id"/>
         </many-to-one>
+
+
     </entity>
 </doctrine-mapping>

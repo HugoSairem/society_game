@@ -3,9 +3,9 @@
 namespace MainBundle\Entity;
 
 /**
- * People
+ * City
  */
-class People
+class City
 {
     /**
      * @var string
@@ -18,6 +18,11 @@ class People
     private $id;
 
     /**
+     * @var \MainBundle\Entity\Region
+     */
+    private $region;
+
+    /**
      * @var \MainBundle\Entity\Society
      */
     private $society;
@@ -28,7 +33,7 @@ class People
      *
      * @param string $name
      *
-     * @return People
+     * @return City
      */
     public function setName($name)
     {
@@ -58,11 +63,35 @@ class People
     }
 
     /**
+     * Set region
+     *
+     * @param \MainBundle\Entity\Region $region
+     *
+     * @return City
+     */
+    public function setRegion(\MainBundle\Entity\Region $region = null)
+    {
+        $this->region = $region;
+
+        return $this;
+    }
+
+    /**
+     * Get region
+     *
+     * @return \MainBundle\Entity\Region
+     */
+    public function getRegion()
+    {
+        return $this->region;
+    }
+
+    /**
      * Set society
      *
      * @param \MainBundle\Entity\Society $society
      *
-     * @return People
+     * @return City
      */
     public function setSociety(\MainBundle\Entity\Society $society = null)
     {
@@ -81,95 +110,6 @@ class People
         return $this->society;
     }
     /**
-     * @var \MainBundle\Entity\Race
-     */
-    private $race;
-
-
-    /**
-     * Set race
-     *
-     * @param \MainBundle\Entity\Race $race
-     *
-     * @return People
-     */
-    public function setRace(\MainBundle\Entity\Race $race = null)
-    {
-        $this->race = $race;
-
-        return $this;
-    }
-
-    /**
-     * Get race
-     *
-     * @return \MainBundle\Entity\Race
-     */
-    public function getRace()
-    {
-        return $this->race;
-    }
-    /**
-     * @var \MainBundle\Entity\Person
-     */
-    private $person;
-
-
-    /**
-     * Set person
-     *
-     * @param \MainBundle\Entity\Person $person
-     *
-     * @return People
-     */
-    public function setPerson(\MainBundle\Entity\Person $person = null)
-    {
-        $this->person = $person;
-
-        return $this;
-    }
-
-    /**
-     * Get person
-     *
-     * @return \MainBundle\Entity\Person
-     */
-    public function getPerson()
-    {
-        return $this->person;
-    }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->person = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-    /**
-     * Add person
-     *
-     * @param \MainBundle\Entity\Person $person
-     *
-     * @return People
-     */
-    public function addPerson(\MainBundle\Entity\Person $person)
-    {
-        $this->person[] = $person;
-
-        return $this;
-    }
-
-    /**
-     * Remove person
-     *
-     * @param \MainBundle\Entity\Person $person
-     */
-    public function removePerson(\MainBundle\Entity\Person $person)
-    {
-        $this->person->removeElement($person);
-    }
-    /**
      * @var integer
      */
     private $population;
@@ -180,7 +120,7 @@ class People
      *
      * @param integer $population
      *
-     * @return People
+     * @return City
      */
     public function setPopulation($population)
     {
@@ -201,17 +141,63 @@ class People
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
+    private $person;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->person = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add person
+     *
+     * @param \MainBundle\Entity\Person $person
+     *
+     * @return City
+     */
+    public function addPerson(\MainBundle\Entity\Person $person)
+    {
+        $this->person[] = $person;
+
+        return $this;
+    }
+
+    /**
+     * Remove person
+     *
+     * @param \MainBundle\Entity\Person $person
+     */
+    public function removePerson(\MainBundle\Entity\Person $person)
+    {
+        $this->person->removeElement($person);
+    }
+
+    /**
+     * Get person
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
     private $city_population;
 
 
     /**
      * Add cityPopulation
      *
-     * @param \MainBundle\Entity\CityPoPulation $cityPopulation
+     * @param \MainBundle\Entity\CityPopulation $cityPopulation
      *
-     * @return People
+     * @return City
      */
-    public function addCityPopulation(\MainBundle\Entity\CityPoPulation $cityPopulation)
+    public function addCityPopulation(\MainBundle\Entity\CityPopulation $cityPopulation)
     {
         $this->city_population[] = $cityPopulation;
 
@@ -221,9 +207,9 @@ class People
     /**
      * Remove cityPopulation
      *
-     * @param \MainBundle\Entity\CityPoPulation $cityPopulation
+     * @param \MainBundle\Entity\CityPopulation $cityPopulation
      */
-    public function removeCityPopulation(\MainBundle\Entity\CityPoPulation $cityPopulation)
+    public function removeCityPopulation(\MainBundle\Entity\CityPopulation $cityPopulation)
     {
         $this->city_population->removeElement($cityPopulation);
     }

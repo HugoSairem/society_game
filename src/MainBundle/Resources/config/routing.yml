@@ -2,10 +2,22 @@ main_connect:
     path:     /
     defaults: { _controller: MainBundle:Default:connect }
 
-main_firstconnect_e1:
-    path:     /firstconnect/e1
-    defaults: { _controller: MainBundle:Default:first_connect_e1 }
+main_delete:
+    path:     /delete
+    defaults: { _controller: MainBundle:Default:deleteGameData }
 
-main_firstconnect_e2:
-    path:     /firstconnect/e2
-    defaults: { _controller: MainBundle:Default:first_connect_e2 }
+main_dashboard:
+    path:     /dashboard
+    defaults: { _controller: MainBundle:Default:dashboard }
+
+main_map:
+    path:     /map
+    defaults: { _controller: MainBundle:Default:map }
+
+main_planet_dashboard:
+    path:     /planetdashboard/{idSelectedPlanet}
+    defaults: { _controller: MainBundle:Default:planetDashboard }
+
+main_planet_dashboard_new:
+    path:     /newplanet
+    defaults: { _controller: MainBundle:Default:createPlanet }
