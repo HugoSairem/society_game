@@ -13,8 +13,11 @@ use MainBundle\Entity\Region;
 use MainBundle\Entity\Religion;
 use MainBundle\Entity\Solar;
 use MainBundle\Entity\Technology;
+use MainBundle\Form\NewPlanetType;
 use MainBundle\Form\PeopleType;
 use MainBundle\Form\SocietyType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use MainBundle\Entity\Society;
@@ -180,7 +183,6 @@ class DefaultController extends Controller
         $peoples = $manager->getRepository(People::class)->findBy(['society' => $society->getId()]);
         $cities = $manager->getRepository(City::class)->findBy(['society' => $society->getId()]);
 
-
         foreach ($peoples as $people){
             $globalPopulation =+ $people->getPopulation();
             $peoplesPopulation = $people->getCityPopulation();
@@ -240,20 +242,32 @@ class DefaultController extends Controller
         ));
     }
 
-    public function createPlanetAction(){
+    public function createPlanetAction(Request $request){
         $planet = new Planet();
-        $planet->setName('Test'.$planet->getId());
+        $form = $this->createForm(NewPlanetType::class, $planet);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+        $planet = $form->getData();
         $entitymanager = $this->getDoctrine()->getManager();
         $bigY = array();
         $entitymanager->persist($planet);
         $entitymanager->flush();
 
-        for ($i = 0; $i <= 5; $i++) {
+        $temperature = $planet->getTemperature();
+        $precipitation = $planet->getPrecipitation();
+        $toxicity = $planet->getToxicity();
+        $atmosphere = $planet->getAtmosphere();
+        $biomeArray = $this->createPlanetBiome($precipitation,$temperature,$toxicity,$atmosphere);
+        $map = $this->createRegionSeed($biomeArray);
+
+        for ($i = 0; $i < 5; $i++) {
             $bigY[$i] = array();
-            for ($j = 0; $j <= 5; $j++) {
+            for ($j = 0; $j < 5; $j++) {
                 $region = new Region();
                 $region->setPlanet($planet);
-                //$region->setSeed($this->createRegionSeed());
+                $region->setSeed($map[$i][$j]);
                 $entitymanager->persist($region);
                 $entitymanager->flush();
                 $bigY[$i][]= $region->getId();
@@ -262,25 +276,11 @@ class DefaultController extends Controller
         $planet->setRegionMapping($bigY);
         $entitymanager->persist($planet);
         $entitymanager->flush();
-
-        return $this->render('@Main/Default/test.html.twig');
-    }
-
-    public function checkId(){
-        $entitymanager = $this->getDoctrine()->getManager();
-        $regions = $entitymanager->getRepository(Region::class)->findAll();
-        $found=false;
-        foreach ($regions as $region){
-            for ($i=0;$found!=true;$i++){
-                if ($region->getId()===$i){
-
-                } else {
-                    $thisIdEmpty = $i;
-                    $found = true;
-                }
-            }
         }
-        return $thisIdEmpty;
+
+        return $this->render('@Main/Default/test.html.twig',array(
+            'form'=>$form->createView(),
+        ));
     }
 
     public function mapAction(){
@@ -300,38 +300,567 @@ class DefaultController extends Controller
             }
         }
 
-        for ($i = 1; $i <= 3; $i++) {
-            $Y = $this->createLake($area,$Y);
-        }
+        //for ($i = 1; $i <= 3; $i++) {
+        //    $Y = $this->createLake($area,$Y);
+        //}
+        $this->createRegionSeed();
 
-        $region->setSeed($Y);
-        $manager->persist($region);
-        $manager->flush();
-        return $this->render('@Main/Default/map.html.twig',array(
-            'map' => $Y,
-        ));
+        //$region->setSeed($Y);
+        //$manager->persist($region);
+        //$manager->flush();
+        return $this->render('@Main/Default/map.html.twig');
     }
 
-    public function createRegionSeed(){
+    public function createRegionSeed($biomeArray){
         $manager = $this->getDoctrine()->getManager();
         $area = $manager->getRepository(Area::class)->findAll();
         $areaLenght = count($area,1)-1;
-        $rand = rand(0,$areaLenght);
 
         $Y = array();
-        for ($i = 0; $i <= 20; $i++) {
+        for ($i = 0; $i <= 99; $i++) {
             $Y[$i] = array();
-            for ($j = 0; $j <= 20; $j++) {
-                $Y[$i][]=$area[0]->getType();
+            for ($j = 0; $j <= 99; $j++) {
+                $Y[$i][]=$biomeArray['land_type'];
             }
         }
 
-        for ($i = 1; $i <= 3; $i++) {
+        for ($i = 1; $i <= 25; $i++) {
             $Y = $this->createLake($area,$Y);
         }
 
-        return $Y;
+        //DECOUPE DE LA MAP EN REGION
+        $map =array();
+
+        $basecoordX=0;
+        $basecoordY=0;
+
+        $multY=1;
+        $multX=1;
+
+        $addY=0;
+
+        for ($i=0;$i<5;$i++){
+            $map[$i]=array();
+            for ($j=0;$j<5;$j++){
+                $map[$i][$j]= array();
+                $COORDY =0;
+                for ($coordY=$basecoordY+$addY;$coordY<$addY+20;$coordY++){
+                    $COORDX = 0;
+                    $map[$i][$j][$COORDY]= array();
+                    for ($coordX=$basecoordX;$coordX<$basecoordX+20;$coordX++){
+                        $map[$i][$j][$COORDY][$COORDX]=$Y[$coordY][$coordX];
+                        //On change de X sur map
+                        $COORDX++;
+                    }
+                    $COORDY++;
+                    //On change de Y sur map
+                }
+                $basecoordX=$basecoordX+20;
+                $basecoordY=0;
+                //On change de X region
+            }
+            $addY = $addY+20;
+            $basecoordX=0;
+            //On change de Y region
+        }
+
+        return $map;
     }
+
+    public function createPlanetBiome($prec,$temp,$toxi,$atm){
+        $totalCell = 10000;
+
+        if ($prec>1.75){
+            $biomeArray = $this->prec175($temp,$atm);
+        } elseif ($prec>1.50){
+            $biomeArray = $this->prec150($temp,$atm);
+        } elseif ($prec>1.25){
+            $biomeArray = $this->prec125($temp,$atm);
+        } elseif ($prec>1.00){
+            $biomeArray = $this->prec100($temp,$atm);
+        } elseif ($prec>0.75){
+            $biomeArray = $this->prec075($temp,$atm);
+        } elseif ($prec>0.50){
+            $biomeArray = $this->prec050($temp,$atm);
+        } elseif ($prec>0.25){
+            $biomeArray = $this->prec025($temp,$atm);
+        } else {
+            $biomeArray = $this->prec000($temp,$atm);
+        }
+
+        return $biomeArray;
+    }
+
+    public function prec175($temp,$atm){
+        $biomeArray = array();
+
+        $biomeArray['vegetation_density'] = $this->vegetation175($atm);
+        $biomeArray['land_type'] = $this->land175($temp);
+        dump($biomeArray);
+
+        return $biomeArray;
+    }
+    public function prec150($temp,$atm){
+        $biomeArray['vegetation_density'] = $this->vegetation150($atm);
+        $biomeArray['land_type'] = $this->land150($temp);
+
+        return $biomeArray;
+    }
+    public function prec125($temp,$atm){
+        $biomeArray['vegetation_density'] = $this->vegetation125($atm);
+        $biomeArray['land_type'] = $this->land125($temp);
+
+        return $biomeArray;
+    }
+    public function prec100($temp,$atm){
+        $biomeArray['vegetation_density'] = $this->vegetation100($atm);
+        $biomeArray['land_type'] = $this->land100($temp);
+
+        return $biomeArray;
+    }
+    public function prec075($temp,$atm){
+        $biomeArray['vegetation_density'] = $this->vegetation075($atm);
+        $biomeArray['land_type'] = $this->land075($temp);
+
+        return $biomeArray;
+    }
+    public function prec050($temp,$atm){
+        $biomeArray['vegetation_density'] = $this->vegetation050($atm);
+        $biomeArray['land_type'] = $this->land050($temp);
+
+        return $biomeArray;
+    }
+    public function prec025($temp,$atm){
+        $biomeArray['vegetation_density'] = $this->vegetation025($atm);
+        $biomeArray['land_type'] = $this->land025($temp);
+
+        return $biomeArray;
+    }
+    public function prec000($temp,$atm){
+        $biomeArray['vegetation_density'] = $this->vegetation000($atm);
+        $biomeArray['land_type'] = $this->land000($temp);
+
+        return $biomeArray;
+    }
+
+    public function land175($temp){
+        if ($temp>1.75){
+            $landBiome = 'sand';
+        }
+        elseif ($temp>1.50){
+            $landBiome = 'earth';
+        }
+        elseif ($temp>1.25){
+            $landBiome = 'grass';
+        }
+        elseif ($temp>1.00){
+            $landBiome = 'mud';
+        }
+        elseif ($temp>0.75){
+            $landBiome = 'swamp';
+        }
+        elseif ($temp>0.50){
+            $landBiome = 'ice';
+        }
+        elseif ($temp>0.25){
+            $landBiome = 'ice';
+        } else{
+            $landBiome = 'ice';
+        }
+        return $landBiome;
+    }
+    public function land150($temp){
+        if ($temp>1.75){
+            $landBiome = 'sand';
+        }
+        elseif ($temp>1.50){
+            $landBiome = 'earth';
+        }
+        elseif ($temp>1.25){
+            $landBiome = 'grass';
+        }
+        elseif ($temp>1.00){
+            $landBiome = 'mud';
+        }
+        elseif ($temp>0.75){
+            $landBiome = 'swamp';
+        }
+        elseif ($temp>0.50){
+            $landBiome = 'ice';
+        }
+        elseif ($temp>0.25){
+            $landBiome = 'ice';
+        } else{
+            $landBiome = 'ice';
+        }
+        return $landBiome;
+    }
+    public function land125($temp){
+        if ($temp>1.75){
+            $landBiome = 'sand';
+        }
+        elseif ($temp>1.50){
+            $landBiome = 'sand';
+        }
+        elseif ($temp>1.25){
+            $landBiome = 'earth';
+        }
+        elseif ($temp>1.00){
+            $landBiome = 'mud';
+        }
+        elseif ($temp>0.75){
+            $landBiome = 'mud';
+        }
+        elseif ($temp>0.50){
+            $landBiome = 'snow';
+        }
+        elseif ($temp>0.25){
+            $landBiome = 'snow';
+        } else{
+            $landBiome = 'ice';
+        }
+        return $landBiome;
+    }
+    public function land100($temp){
+        if ($temp>1.75){
+            $landBiome = 'sand';
+        }
+        elseif ($temp>1.50){
+            $landBiome = 'sand';
+        }
+        elseif ($temp>1.25){
+            $landBiome = 'earth';
+        }
+        elseif ($temp>1.00){
+            $landBiome = 'grass';
+        }
+        elseif ($temp>0.75){
+            $landBiome = 'grass';
+        }
+        elseif ($temp>0.50){
+            $landBiome = 'snow';
+        }
+        elseif ($temp>0.25){
+            $landBiome = 'snow';
+        } else{
+            $landBiome = 'snow';
+        }
+        return $landBiome;
+    }
+    public function land075($temp){
+        if ($temp>1.75){
+            $landBiome = 'sand';
+        }
+        elseif ($temp>1.50){
+            $landBiome = 'sand';
+        }
+        elseif ($temp>1.25){
+            $landBiome = 'earth';
+        }
+        elseif ($temp>1.00){
+            $landBiome = 'grass';
+        }
+        elseif ($temp>0.75){
+            $landBiome = 'grass';
+        }
+        elseif ($temp>0.50){
+            $landBiome = 'snow';
+        }
+        elseif ($temp>0.25){
+            $landBiome = 'snow';
+        } else{
+            $landBiome = 'earth';
+        }
+        return $landBiome;
+    }
+    public function land050($temp){
+        if ($temp>1.75){
+            $landBiome = 'sandstone';
+        }
+        elseif ($temp>1.50){
+            $landBiome = 'sand';
+        }
+        elseif ($temp>1.25){
+            $landBiome = 'sand';
+        }
+        elseif ($temp>1.00){
+            $landBiome = 'earth';
+        }
+        elseif ($temp>0.75){
+            $landBiome = 'earth';
+        }
+        elseif ($temp>0.50){
+            $landBiome = 'earth';
+        }
+        elseif ($temp>0.25){
+            $landBiome = 'earth';
+        } else{
+            $landBiome = 'frozenearth';
+        }
+        return $landBiome;
+    }
+    public function land025($temp){
+        if ($temp>1.75){
+            $landBiome = 'sandstone';
+        }
+        elseif ($temp>1.50){
+            $landBiome = 'sandstone';
+        }
+        elseif ($temp>1.25){
+            $landBiome = 'sand';
+        }
+        elseif ($temp>1.00){
+            $landBiome = 'sand';
+        }
+        elseif ($temp>0.75){
+            $landBiome = 'earth';
+        }
+        elseif ($temp>0.50){
+            $landBiome = 'earth';
+        }
+        elseif ($temp>0.25){
+            $landBiome = 'earth';
+        } else{
+            $landBiome = 'frozenearth';
+        }
+        return $landBiome;
+    }
+    public function land000($temp){
+        if ($temp>1.75){
+            $landBiome = 'rock';
+        }
+        elseif ($temp>1.50){
+            $landBiome = 'sandstone';
+        }
+        elseif ($temp>1.25){
+            $landBiome = 'sandstone';
+        }
+        elseif ($temp>1.00){
+            $landBiome = 'sand';
+        }
+        elseif ($temp>0.75){
+            $landBiome = 'sand';
+        }
+        elseif ($temp>0.50){
+            $landBiome = 'earth';
+        }
+        elseif ($temp>0.25){
+            $landBiome = 'frozenearth';
+        } else{
+            $landBiome = 'frozenearth';
+        }
+        return $landBiome;
+    }
+
+    public function vegetation175($atm){
+        if ($atm>1.75){
+            $vegetationDensity = 'worldforest';
+        }
+        elseif ($atm>1.50){
+            $vegetationDensity = 'oldforest';
+        }
+        elseif ($atm>1.25){
+            $vegetationDensity = 'oldforest';
+        }
+        elseif ($atm>1.00){
+            $vegetationDensity = 'jungle';
+        }
+        elseif ($atm>0.75){
+            $vegetationDensity = 'jungle';
+        }
+        elseif ($atm>0.50){
+            $vegetationDensity = 'forest';
+        }
+        elseif ($atm>0.25){
+            $vegetationDensity = 'littleforest';
+        } else{
+            $vegetationDensity = 'woods';
+        }
+        return $vegetationDensity;
+    }
+    public function vegetation150($atm){
+        if ($atm>1.75){
+            $vegetationDensity = 'oldforest';
+        }
+        elseif ($atm>1.50){
+            $vegetationDensity = 'oldforest';
+        }
+        elseif ($atm>1.25){
+            $vegetationDensity = 'jungle';
+        }
+        elseif ($atm>1.00){
+            $vegetationDensity = 'jungle';
+        }
+        elseif ($atm>0.75){
+            $vegetationDensity = 'forest';
+        }
+        elseif ($atm>0.50){
+            $vegetationDensity = 'littleforest';
+        }
+        elseif ($atm>0.25){
+            $vegetationDensity = 'littleforest';
+        } else{
+            $vegetationDensity = 'woods';
+        }
+        return $vegetationDensity;
+    }
+    public function vegetation125($atm){
+        if ($atm>1.75){
+            $vegetationDensity = 'oldforest';
+        }
+        elseif ($atm>1.50){
+            $vegetationDensity = 'jungle';
+        }
+        elseif ($atm>1.25){
+            $vegetationDensity = 'jungle';
+        }
+        elseif ($atm>1.00){
+            $vegetationDensity = 'forest';
+        }
+        elseif ($atm>0.75){
+            $vegetationDensity = 'forest';
+        }
+        elseif ($atm>0.50){
+            $vegetationDensity = 'littleforest';
+        }
+        elseif ($atm>0.25){
+            $vegetationDensity = 'littleforest';
+        } else{
+            $vegetationDensity = 'bush';
+        }
+        return $vegetationDensity;
+    }
+    public function vegetation100($atm){
+        if ($atm>1.75){
+            $vegetationDensity = 'jungle';
+        }
+        elseif ($atm>1.50){
+            $vegetationDensity = 'jungle';
+        }
+        elseif ($atm>1.25){
+            $vegetationDensity = 'forest';
+        }
+        elseif ($atm>1.00){
+            $vegetationDensity = 'forest';
+        }
+        elseif ($atm>0.75){
+            $vegetationDensity = 'littleforest';
+        }
+        elseif ($atm>0.50){
+            $vegetationDensity = 'littleforest';
+        }
+        elseif ($atm>0.25){
+            $vegetationDensity = 'woods';
+        } else{
+            $vegetationDensity = 'bush';
+        }
+        return $vegetationDensity;
+    }
+    public function vegetation075($atm){
+        if ($atm>1.75){
+            $vegetationDensity = 'jungle';
+        }
+        elseif ($atm>1.50){
+            $vegetationDensity = 'forest';
+        }
+        elseif ($atm>1.25){
+            $vegetationDensity = 'forest';
+        }
+        elseif ($atm>1.00){
+            $vegetationDensity = 'littleforest';
+        }
+        elseif ($atm>0.75){
+            $vegetationDensity = 'littleforest';
+        }
+        elseif ($atm>0.50){
+            $vegetationDensity = 'woods';
+        }
+        elseif ($atm>0.25){
+            $vegetationDensity = 'woods';
+        } else{
+            $vegetationDensity = 'bush';
+        }
+        return $vegetationDensity;
+    }
+    public function vegetation050($atm){
+        if ($atm>1.75){
+            $vegetationDensity = 'forest';
+        }
+        elseif ($atm>1.50){
+            $vegetationDensity = 'forest';
+        }
+        elseif ($atm>1.25){
+            $vegetationDensity = 'littleforest';
+        }
+        elseif ($atm>1.00){
+            $vegetationDensity = 'littleforest';
+        }
+        elseif ($atm>0.75){
+            $vegetationDensity = 'woods';
+        }
+        elseif ($atm>0.50){
+            $vegetationDensity = 'woods';
+        }
+        elseif ($atm>0.25){
+            $vegetationDensity = 'bush';
+        } else{
+            $vegetationDensity = 'bush';
+        }
+        return $vegetationDensity;
+    }
+    public function vegetation025($atm){
+        if ($atm>1.75){
+            $vegetationDensity = 'forest';
+        }
+        elseif ($atm>1.50){
+            $vegetationDensity = 'littleforest';
+        }
+        elseif ($atm>1.25){
+            $vegetationDensity = 'littleforest';
+        }
+        elseif ($atm>1.00){
+            $vegetationDensity = 'woods';
+        }
+        elseif ($atm>0.75){
+            $vegetationDensity = 'woods';
+        }
+        elseif ($atm>0.50){
+            $vegetationDensity = 'bush';
+        }
+        elseif ($atm>0.25){
+            $vegetationDensity = 'bush';
+        } else{
+            $vegetationDensity = 'none';
+        }
+        return $vegetationDensity;
+    }
+    public function vegetation000($atm){
+        if ($atm>1.75){
+            $vegetationDensity = 'littleforest';
+        }
+        elseif ($atm>1.50){
+            $vegetationDensity = 'littleforest';
+        }
+        elseif ($atm>1.25){
+            $vegetationDensity = 'woods';
+        }
+        elseif ($atm>1.00){
+            $vegetationDensity = 'woods';
+        }
+        elseif ($atm>0.75){
+            $vegetationDensity = 'bush';
+        }
+        elseif ($atm>0.50){
+            $vegetationDensity = 'bush';
+        }
+        elseif ($atm>0.25){
+            $vegetationDensity = 'none';
+        } else{
+            $vegetationDensity = 'none';
+        }
+        return $vegetationDensity;
+    }
+
 
     public function tryAlready($dx,$dy,$arrays,$Y){
         $answer =false;
@@ -346,12 +875,12 @@ class DefaultController extends Controller
 
     // Lake creation
     public function createLake($area,$Y){
-        $randX = rand(0,20);
-        $randY = rand(0,20);
+        $randX = rand(0,99);
+        $randY = rand(0,99);
         $lakeSize = rand(10,20);
         $lakeWidth = rand(5,10);
         $lakeHeight = rand(5,10);
-        $maxYX = [21,21];
+        $maxYX = [100,100];
         $card = ['up','right','down','left'];
 
         $alreadyDone[] = [$randX,$randY];

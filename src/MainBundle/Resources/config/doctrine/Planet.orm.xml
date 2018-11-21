@@ -10,9 +10,9 @@
         </id>
         <field name="name" type="string" length="255" column="name" nullable="true"/>
         <field name="precipitation" type="decimal" precision="5" scale="2" column="precipitation" nullable="true"/>
-        <field name="temperature" type="decimal" column="temperature" nullable="true"/>
-        <field name="toxicity" type="decimal" column="toxicity" nullable="true"/>
-        <field name="atmosphere" type="decimal" column="atmosphere" nullable="true"/>
+        <field name="temperature" type="decimal" precision="5" scale="2" column="temperature" nullable="true"/>
+        <field name="toxicity" type="decimal" precision="5" scale="2" column="toxicity" nullable="true"/>
+        <field name="atmosphere" type="decimal" precision="5" scale="2" column="atmosphere" nullable="true"/>
         <field name="regionMapping" type="array" column="region_mapping" nullable="true"/>
 
 
