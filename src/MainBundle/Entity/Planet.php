@@ -353,4 +353,33 @@ class Planet
 
         return $this;
     }
+    /**
+     * @var integer
+     */
+    private $age;
+
+
+    /**
+     * Set age
+     *
+     * @param integer $age
+     *
+     * @return Planet
+     */
+    public function setAge($age)
+    {
+        $this->age = $age;
+
+        return $this;
+    }
+
+    /**
+     * Get age
+     *
+     * @return integer
+     */
+    public function getAge()
+    {
+        return $this->age;
+    }
 }
