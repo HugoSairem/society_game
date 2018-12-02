@@ -24,10 +24,10 @@ security:
                 # csrf_provider: form.csrf_provider
 
             logout:
-                target: /landing
+                target: /login
             logout_on_user_change : true
             anonymous:    true
-            access_denied_url: /landing
+            access_denied_url: /login
 
     access_control:
         - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }

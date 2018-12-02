@@ -1,0 +1,80 @@
+ul{
+  list-style: none;
+}
+
+a{
+  text-decoration: none;
+  color: black;
+
+  &:hover{
+    color:red;
+  }
+}
+
+.admin-nav{
+  position:fixed;
+  left:5px;
+  top:20px;
+
+}
+
+.subadmin-nav{
+  margin-top:25px;
+
+}
+
+.admin-content{
+  width:80%;
+  min-height:100vh;
+  margin-left:20%;
+  background-color: #94a39f;
+  padding:20px;
+
+  form{
+    margin-top:20px;
+
+    div{
+      margin-top:10px;
+      width:400px;
+      display:flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    input {
+      width: 250px;
+      height:30px;
+    }
+
+    select{
+      width: 250px;
+      height:30px;
+    }
+
+    button{
+      width:250px;
+      height:30px;
+      margin:0 auto;
+      margin-top: 20px;
+      font-size:15px;
+    }
+  }
+}
+
+.solar-list{
+  margin-top:10px;
+}
+
+.float-right{
+  float:right;
+}
+
+.delete{
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  width:100px;
+  height:30px;
+  background-color: darkred;
+  color:white;
+}

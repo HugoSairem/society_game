@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- src/AppBundle/Resources/config/doctrine/User.orm.xml -->
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <entity name="MapBundle\Entity\Planet" repository-class="MapBundle\Repository\Planet" table="planet">
+        <id name="id" type="integer" column="id">
+            <generator strategy="AUTO"/>
+        </id>
+        <field name="name" type="string" length="255" column="name" nullable="true"/>
+        <field name="precipitation" type="decimal" precision="5" scale="2" column="precipitation" nullable="true"/>
+        <field name="temperature" type="decimal" precision="5" scale="2" column="temperature" nullable="true"/>
+        <field name="toxicity" type="decimal" precision="5" scale="2" column="toxicity" nullable="true"/>
+        <field name="atmosphere" type="decimal" precision="5" scale="2" column="atmosphere" nullable="true"/>
+        <field name="regionMapping" type="array" column="region_mapping" nullable="true"/>
+
+
+
+        <one-to-many
+                field="region"
+                target-entity="MapBundle\Entity\Region"
+                mapped-by="planet" />
+        <many-to-one
+                field="solar"
+                target-entity="MapBundle\Entity\Solar"
+                inversed-by="solar"
+        >
+            <join-column name="solar" referenced-column-name="id" on-delete="CASCADE"/>
+        </many-to-one>
+    </entity>
+</doctrine-mapping>

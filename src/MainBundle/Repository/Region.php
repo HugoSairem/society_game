@@ -10,4 +10,6 @@ namespace MainBundle\Repository;
  */
 class Region extends \Doctrine\ORM\EntityRepository
 {
+
+
 }

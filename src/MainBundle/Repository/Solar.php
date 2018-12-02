@@ -10,4 +10,16 @@ namespace MainBundle\Repository;
  */
 class Solar extends \Doctrine\ORM\EntityRepository
 {
+
+    public function getAllSolars(){
+        $query = $this->createQueryBuilder('s')
+            ->join('s.planet','p')
+            ->join('p.region','r')
+            ->getQuery();
+
+        $solars = $query->getResult();
+
+        return $solars;
+    }
+
 }

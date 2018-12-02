@@ -2,16 +2,16 @@
 
 namespace MainBundle\Controller;
 
-use MainBundle\Entity\Area;
+use MapBundle\Entity\Area;
 use MainBundle\Entity\City;
 use MainBundle\Entity\People;
 use MainBundle\Entity\Person;
-use MainBundle\Entity\Planet;
+use MapBundle\Entity\Planet;
 use MainBundle\Entity\Race;
 use MainBundle\Entity\Regime;
-use MainBundle\Entity\Region;
+use MapBundle\Entity\Region;
 use MainBundle\Entity\Religion;
-use MainBundle\Entity\Solar;
+use MapBundle\Entity\Solar;
 use MainBundle\Entity\Technology;
 use MainBundle\Form\NewPlanetType;
 use MainBundle\Form\PeopleType;

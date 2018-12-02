@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 {% block content %}
-    <a href="{{ path('main_planet_dashboard_new') }}>New Planet</a>
+    <a href="{{ path('main_planet_dashboard_new') }}">New Planet</a>
     {% for planet in allPlanets %}
         <a href="{{ path('main_planet_dashboard',{'idSelectedPlanet':planet.id}) }}">{{ planet.name }}</a>
     {% endfor %}

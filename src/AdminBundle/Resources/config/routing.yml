@@ -1,0 +1,31 @@
+admin_dashboard:
+    path:     /admin/dashboard
+    defaults: { _controller: AdminBundle:Dashboard:index }
+
+admin_dashboard_map:
+    path:     /admin/dashboard/map
+    defaults: { _controller: AdminBundle:Dashboard:map }
+
+admin_dashboard_delete_solar:
+    path:     /admin/dashboard/delete_solar/{idSelectedSolar}
+    defaults: { _controller: AdminBundle:Dashboard:deleteSolar }
+
+admin_dashboard_delete_planet:
+    path:     /admin/dashboard/delete_planet/{idSelectedPlanet}
+    defaults: { _controller: AdminBundle:Dashboard:deletePlanet }
+
+admin_dashboard_list_user:
+    path:     /admin/dashboard/users_list
+    defaults: { _controller: AdminBundle:Dashboard:listUser }
+
+admin_dashboard_newplanet:
+    path:     /admin/dashboard/newplanet
+    defaults: { _controller: MapBundle:PlanetGeneration:newPlanet }
+
+admin_dashboard_newsolar:
+    path:     /admin/dashboard/newsolar
+    defaults: { _controller: MapBundle:PlanetGeneration:newSolar }
+
+admin_dashboard_map_overview:
+    path:     /admin/dashboard/map_overview/{idSelectedPlanet}
+    defaults: { _controller: AdminBundle:Dashboard:mapOverview }

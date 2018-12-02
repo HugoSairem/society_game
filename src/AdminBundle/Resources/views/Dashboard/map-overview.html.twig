@@ -1,0 +1,35 @@
+{% extends 'admin-base.html.twig' %}
+
+{% block content %}
+    {% include 'admin-map-base.html.twig' %}
+    <div class="admin-content">
+    {% if selectedPlanet != null %}
+        <div class="mapContent">
+            <div class="map">
+                {% for keyY,bigY in selectedPlanet.regionmapping %}
+                    {% for keyX,bigX in bigY %}
+                        {% for region in regions %}
+                            {% if bigX == region.id %}
+                                <div class="regionMap">
+                                    {% for key,y in region.seed %}
+                                        <span class="yRow">
+                                    {% for x in y %}
+                                            <span class="mapX {{ x }} "></span>
+                                            {% endfor %}<br>
+                                </span>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                        {% endfor %}
+
+
+                    {% endfor %}
+                    <br>
+                {% endfor %}
+            </div>
+        </div>
+
+    {% endif %}
+    </div>
+{% endblock %}

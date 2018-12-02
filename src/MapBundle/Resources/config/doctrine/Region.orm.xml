@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- src/AppBundle/Resources/config/doctrine/User.orm.xml -->
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <entity name="MapBundle\Entity\Region" repository-class="MapBundle\Repository\Region" table="region">
+        <id name="id" type="integer" column="id">
+            <generator strategy="AUTO"/>
+        </id>
+        <field name="name" type="string" length="255" column="name" nullable="true"/>
+        <field name="seed" type="array" column="seed" nullable="true"/>
+
+        <!--<one-to-many-->
+                <!--field="city"-->
+                <!--target-entity="MainBundle\Entity\City"-->
+                <!--mapped-by="region" />-->
+        <many-to-one
+                field="planet"
+                target-entity="MapBundle\Entity\Planet"
+                inversed-by="planet"
+        >
+            <join-column name="planet" referenced-column-name="id" on-delete="CASCADE"/>
+        </many-to-one>
+
+    </entity>
+</doctrine-mapping>

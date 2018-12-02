@@ -1,0 +1,13 @@
+<h2>{{ selectedPlanet.name }}</h2>
+<b>Solar System : {{ selectedPlanet.solar.name }}</b>
+
+<ul>
+    <li>Temp : {{ selectedPlanet.temperature }}</li>
+    <li>Prec : {{ selectedPlanet.precipitation }}</li>
+    <li>Tox : {{ selectedPlanet.toxicity }}</li>
+    <li>Atm : {{ selectedPlanet.atmosphere }}</li>
+</ul>
+<br>
+
+
+<a class="delete" href="{{ path('admin_dashboard_delete_planet',{'idSelectedPlanet':selectedPlanet.id}) }}"><span>Delete</span></a>

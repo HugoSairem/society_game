@@ -1,0 +1,14 @@
+
+        <ul>
+            <a href="{{ path('admin_dashboard_newsolar') }}"><li>New Solar System</li></a>
+            <a href="{{ path('admin_dashboard_newplanet') }}"><li>New Planet</li></a>
+        </ul>
+        <br>
+
+        {% if selectedPlanet is defined %}
+            {% include '@Admin/Base/selected-planet.html.twig' %}
+        {% endif %}
+    </div>
+    </div>
+
+
